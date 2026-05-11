@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<KeyValueMapOperations name="KVM-GetBackendCreds" mapIdentifier="backend">
+  <Scope>environment</Scope>
+  <Get assignTo="private.backend.username">
+    <Key>
+      <Parameter>backend-username</Parameter>
+    </Key>
+  </Get>
+  <Get assignTo="private.backend.password">
+    <Key>
+      <Parameter>backend-password</Parameter>
+    </Key>
+  </Get>
+</KeyValueMapOperations>

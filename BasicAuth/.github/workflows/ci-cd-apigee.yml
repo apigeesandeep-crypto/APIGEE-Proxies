@@ -1,0 +1,43 @@
+name: Apigee CI/CD Deployment
+on:
+  push:
+    branches:
+      - test
+
+permissions:
+  contents: read
+  id-token: write # Required for WIF
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Apigee Lint
+      - name: Apigee Lint
+        run: |
+          npm install -g apigeelint
+          apigeelint -s ./apiproxy -f table.js # Notice path is ./apiproxy
+
+      # 2. Authenticate to Google Cloud (Keyless)
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: 'access_token'
+          workload_identity_provider: 'projects/172484352684/locations/global/workloadIdentityPools/apigee-pool/providers/github-provider'
+          service_account: 'apigee-github-deployer@project-231b329b-a80c-4f8d-828.iam.gserviceaccount.com'
+
+      # 3. Setup Maven and Deploy
+      - name: Deploy to Apigee
+        run: |
+          mvn install -Peval \
+            -Dusername=not-needed \
+            -Dpassword=not-needed \
+            -Dbearer=${{ steps.auth.outputs.access_token }} \
+            -Dorg=project-231b329b-a80c-4f8d-828 \
+            -Denv=eval \
+            -Dapigee.config.options=update
+        working-directory: ./BasicAuth

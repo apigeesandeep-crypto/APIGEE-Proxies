@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<BasicAuthentication name="BA-EncodeBackendCreds">
+  <DisplayName>Encode Backend Basic Auth</DisplayName>
+  <Operation>Encode</Operation>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <User ref="private.backend.username"/>
+  <Password ref="private.backend.password"/>
+  <!-- Writes: Authorization: Basic <base64> on the outbound request -->
+  <AssignTo createNew="false">request.header.Authorization</AssignTo>
+</BasicAuthentication>
