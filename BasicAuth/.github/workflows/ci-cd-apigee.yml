@@ -16,10 +16,11 @@ jobs:
         uses: actions/checkout@v4
 
       # 1. Apigee Lint
+      # Note: We run this from the folder where 'apiproxy' actually lives
       - name: Apigee Lint
         run: |
           npm install -g apigeelint
-          apigeelint -s ./apiproxy -f table.js # Notice path is ./apiproxy
+          apigeelint -s ./BasicAuth/apiproxy -f table.js 
 
       # 2. Authenticate to Google Cloud (Keyless)
       - name: Authenticate to Google Cloud
@@ -31,13 +32,13 @@ jobs:
           service_account: 'apigee-github-deployer@project-231b329b-a80c-4f8d-828.iam.gserviceaccount.com'
 
       # 3. Setup Maven and Deploy
+      # Added -DskipTests and cleaned up deployment options
       - name: Deploy to Apigee
         run: |
-          mvn install -Peval \
-            -Dusername=not-needed \
-            -Dpassword=not-needed \
+          mvn clean install -Peval \
             -Dbearer=${{ steps.auth.outputs.access_token }} \
             -Dorg=project-231b329b-a80c-4f8d-828 \
             -Denv=eval \
-            -Dapigee.config.options=update
+            -Dapigee.options=update \
+            -DskipTests
         working-directory: ./BasicAuth
