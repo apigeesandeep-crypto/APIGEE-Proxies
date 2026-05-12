@@ -41,4 +41,4 @@ jobs:
             -Denv=eval \
             -Dapigee.options=update \
             -DskipTests
-        working-directory: ./BasicAuth
+        working-directory: ../APIGEE-Proxies
